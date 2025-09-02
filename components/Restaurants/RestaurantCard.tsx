@@ -1,11 +1,12 @@
 import { useRouter } from "expo-router"
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { Text } from "@/components/Themed";
+import { Scale, verticalScale } from "react-native-size-matters";
 
 
-const RestaurantCard = ({ id, name }: { id: number, name: string }) => {
+const RestaurantCard = ({ id, name, image_url }: { id: number, name: string, image_url: string | null }) => {
     const router = useRouter();
 
     const moveToVendorPage = () => router.push(`/vendor/${id}`)
@@ -15,11 +16,38 @@ const RestaurantCard = ({ id, name }: { id: number, name: string }) => {
             onPress={moveToVendorPage} 
             style={[styles.horizontalListItem, styles.vendorCard]}
         >
-            <Image 
-                style={styles.backgroundImage} 
-                source={require("@/assets/images/food.png")}
-            />
-            <Text style={styles.text}>{name}</Text>
+            {
+                !image_url ? 
+                <Image 
+                    style={styles.backgroundImage} 
+                    source={require("@/assets/images/food.png")}
+                />
+                :
+                <Image 
+                    style={styles.backgroundImage} 
+                    source={{ uri: image_url }}
+                />
+            }
+            <View style={{flexDirection: 'row', alignItems: 'center', padding: 16, gap: 12, }}>
+                {
+                    !image_url ?
+                    <Image
+                        style={styles.restaurantLogo} 
+                        source={require("@/assets/images/food.png")}
+                    />
+                    :
+                    <Image 
+                        style={styles.restaurantLogo} 
+                        source={{ uri: image_url }}
+                    />
+                }
+                {/* <View style={{backgroundColor: 12}}/> */}
+                <View>
+                    {/* <Text style={[styles.text, {fontSize: 20}]}>{name}</Text> */}
+                    <Text style={styles.text}>{name}</Text>
+
+                </View>
+            </View>
         </TouchableOpacity>
     )
 }
@@ -32,22 +60,34 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     vendorCard: {
-        backgroundColor: "red",
+        backgroundColor: "black",
         marginRight: 0,
-        height: 100,
+        height: verticalScale(150),
         borderRadius: 12,
         marginVertical: 7,
-        justifyContent: "center",
-        position: "relative"
+        justifyContent: "flex-end",
+        alignItems: 'flex-start'
     },
     backgroundImage: { 
         width: "100%", 
         height: "100%", 
         position: "absolute", 
         zIndex: -10, 
-        borderRadius: 12 
+        borderRadius: 12 ,
+        tintColor: "#11111",
     },
-    text: { color: "#fff" }
+    text: { 
+        color: "#fff", 
+        fontSize: 16, 
+        fontWeight: 600
+    },
+    restaurantLogo: {
+        width: 40,
+        height: 40,
+        borderRadius: 82,
+        borderWidth: 3,
+        borderColor: 'white'
+    }
 })
 
 export default RestaurantCard;

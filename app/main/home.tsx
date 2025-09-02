@@ -1,6 +1,6 @@
 import React from "react"
 import { ScrollView, StyleSheet, Pressable, View, ActivityIndicator } from "react-native";
-import { Page, Text } from "../../components/Themed";
+import { Page, PageScroll, Text } from "../../components/Themed";
 import Searchbar from "../../components/Searchbar";
 import CategoriesList from "../../components/CategoriesList";
 import { useState } from "react";
@@ -8,6 +8,10 @@ import useRestaurant from "@/hooks/useRestaurant";
 import HomeSearch from "@/components/HomeSearch";
 import RestaurantsList from "@/components/Restaurants/RestaurantsList";
 import RecentOrdersList from "@/components/RecentOrders/RecentOrdersList";
+import useOrders from "@/hooks/useOrders";
+import Styles from "@/constants/Styles";
+import useCurrentUser from "@/hooks/useCurrentUser";
+import {scale, verticalScale} from 'react-native-size-matters'
 
 const Recents = [
     {
@@ -50,6 +54,9 @@ export default function HomePage() {
 
 
     const { isLoading, data: restaurant } = useRestaurant();
+    const { currentUser } = useCurrentUser();
+    const { getRecentOrders } = useOrders();
+    const recentOrders = getRecentOrders();
 
     if(isSearchActive) {
         return (
@@ -60,43 +67,40 @@ export default function HomePage() {
     }
 
     return (
-        <Page style={styles.pagePadding}>
-            <ScrollView contentInset={{ bottom: 128 }} showsVerticalScrollIndicator={false}>
+        <PageScroll>
+            <View style={[styles.pagePadding, {paddingTop: 24}]}>
+                <Text style={{fontSize: 20, fontFamily: "Montserrat", fontWeight: 500}}>
+                    Hi, {currentUser?.full_name! || "User's Name"}
+                </Text>
+                <Text style={styles.greetingText}>What will we be having today?</Text>
+            </View>
 
-                <View>
-                    <Text>Hi There</Text>
-                    <Text style={styles.greetingText}>What will we be having today?</Text>
-                </View>
+            <Pressable onPress={() => setIsSearchActive(true)} style={Styles.DefaultPaddingX}>
+                <Searchbar disable={false}/>
+            </Pressable>
 
-                <Pressable onPress={() => setIsSearchActive(true)}>
-                    <Searchbar disable={false}/>
-                </Pressable>
+            <CategoriesList/>
 
-                <CategoriesList/>
+            <View style={[Styles.DefaultSpaceY]}>
+                <Text style={styles.recentsText}>Recents</Text>
+                <RecentOrdersList recentOrders={recentOrders!} />
+            </View>
 
-                <View>
-                    <Text style={styles.recentsText}>Recents</Text>
-                    <RecentOrdersList recentOrders={Recents} />
-                </View>
-
-                <View>
-                    <Text style={styles.vendorText}>Vendor</Text>
-                    {
-                        isLoading ? <ActivityIndicator/> :
-                        <RestaurantsList restaurants={restaurant!}/>
-                    }
-                </View>
-
-            </ScrollView>
-
-        </Page>
+            <View style={Styles.DefaultPaddingX}>
+                <Text style={styles.vendorText}>Vendor</Text>
+                {
+                    isLoading ? <ActivityIndicator/> :
+                    <RestaurantsList restaurants={restaurant!}/>
+                }
+            </View>
+        </PageScroll>
     )
 }
 
 
 const styles = StyleSheet.create({
-    recentsText: { fontWeight: "900", marginVertical: 16, fontSize: 20 },
-    greetingText: { fontWeight: "900", marginVertical: 16, fontSize: 20 },
+    recentsText: { fontWeight: "900", marginVertical: 16, fontSize: 20, marginHorizontal: 16 },
+    greetingText: { fontWeight: "700", marginTop: 8, marginBottom: 24, fontSize: 32, fontFamily: "Lato"},
     vendorText: { fontWeight: "900", marginVertical: 16, fontSize: 20 },
     pagePadding: { paddingHorizontal: 16 }
 })

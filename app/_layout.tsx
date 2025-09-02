@@ -3,7 +3,7 @@ import { supabase } from '@/utils/supabase';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer, ThemeProvider } from '@react-navigation/native';
 import { Session } from '@supabase/supabase-js';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
@@ -52,7 +52,7 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return <RootLayoutNav />
 }
 
 function RootLayoutNav() {
@@ -71,16 +71,16 @@ function RootLayoutNav() {
   }, [])
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <StatusBar/>
-        <Stack initialRouteName={ (session && session.user) ? "main" : "login" } screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="main"/>
-          <Stack.Screen name="login"/>
-          <Stack.Screen name="create-account"/>
-        </Stack>
-        <Toast position='top' />
-      </ThemeProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <StatusBar style='light' />
+          <Stack initialRouteName={ (session && session.user) ? "main" : "login" } screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="main"/>
+            <Stack.Screen name="login"/>
+            <Stack.Screen name="create-account"/>
+          </Stack>
+          <Toast position='top' />
+        </ThemeProvider>
+      </QueryClientProvider>
   );
 }

@@ -1,6 +1,3 @@
-import { CategoryName } from "@/components/CategoriesList";
-import { Timestamp } from "react-native-reanimated/lib/typescript/reanimated2/commonTypes";
-
 export interface Product {
     id: string,
     name: string,
@@ -23,6 +20,8 @@ export interface CartItemAlt {
     menu_item_id: number;
     quantity: number;
     user_id: string;
+    addon_name?: string;
+    addon_price?: number;
     menu_item: {
       resturant_id: number,
       price: number,
@@ -54,6 +53,7 @@ export interface MenuItem {
     quantity: number,
     description: string,
     preparation_time: string,
+    warning_stock_value: number,
 }
 
 export interface Vendor {
@@ -69,12 +69,14 @@ export interface TranactionSplitData {
 export interface TransactionData {
     email: string,
     amount: number,
-    subaccounts: TranactionSplitData[]
+    subaccounts: TranactionSplitData[],
+    cartItems: CartItemAlt[],
+    customerName: string,
 }
 
 export interface Category{
     id: string,
-    name: CategoryName,
+    name: string,
     image: string,
 }
 
@@ -82,7 +84,7 @@ export enum OrderStatus {
     New = 0,
     Accepted = 1,
     Preparing = 2,
-    Completed = 3,
+    Ready = 3,
     Collected = 4,
     Cancelled = 5,
 }
